@@ -19,7 +19,7 @@ var vtexIdOptions = {
   addToWhiteList: [/^\/api/, /^\/publications/]
 };
 
-var app = express();;
+var app = express();
 
 app.engine('html', swig.renderFile);
 // all environments
