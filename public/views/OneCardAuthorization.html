@@ -1,0 +1,56 @@
+<div class="jumbotron text-center">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <h1 class="well">{{ message }}</h1>
+
+    <div ng-if="loadingData.$$state.status === 0" >
+        <strong>Loading...</strong>
+    </div>
+
+    <div ng-if="loadingData.$$state.status !== 0">
+        <form>
+            <h3>{{userNameLabel}}</h3>
+            <formly-form model="userNameModel" fields="userConfig" form="form" />
+            <h3>{{basicConfigLabel}}</h3>
+            <formly-form model="basicConfigModel" fields="basicConfig" form="form" />
+            <h3>{{cardConfigLabel}}</h3>
+            <formly-form model="creditCardModel" fields="cardConfig"  form="form" />
+        </form>
+    </div>
+
+    <button id="btnOneCard" class="btn btn-info active" ng-click="runJmeterTest(userNameModel, basicConfigModel,creditCardModel); $scope.loading=true">Run One Card Test</button>
+
+    <div class="form-group">
+        <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-if="loading"></span>
+    </div>
+
+    <div ng-show="checkResultExistence()"  align="left">
+        <h3 class="well" align="left">Passes Tests: {{resultPasses.length}}</h3>
+        <h3 class="well" align="left">Failed Tests: {{resultFails.length}}</h3>
+        <div class="well">
+            <table class="table table-bordered" ng-repeat="res in resultFails">
+                <td>
+                    <div><b>{{res.testCaseName }} - {{res.testStep}}</b></div>
+
+                    <div><b>Test Result</b></div>
+                    <div>{{ res.testResult }}</div>
+
+                    <div><b>Assert</b></div>
+                    <div>{{ res.testStepAssertion }}</div>
+
+                    <div><b>Failure message</b></div>
+                    <div>{{ res.failureMessage }}</div>
+
+                    <div><b>Response Details</b></div>
+                    <div>{{ res.responseDetails }}</div>
+
+
+                    <div><b>Request Info</b></div>
+                    <div>{{ res.requestUrl }}</div>
+                    <div>{{ res.requestHeaders }}</div>
+                    <div>{{ res.requestBody }}</div>
+                </td>
+            </table>
+        </div>
+    </div>
+</div>

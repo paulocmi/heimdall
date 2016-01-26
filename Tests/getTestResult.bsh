@@ -1,0 +1,47 @@
+import java.io.FileWriter;
+import java.io.File;
+import java.io.IOException;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.apache.jmeter.assertions.AssertionResult;
+
+AssertionResult[] results = sampleResult.getAssertionResults();
+AssertionResult result = results[0];
+
+JSONObject obj = new JSONObject();
+
+String path = vars.get("path");
+String reference = vars.get("reference");
+
+String sampleLabel = prev.getSampleLabel();
+String samplerData = prev.getSamplerData();
+String requestHeaders = prev.getRequestHeaders();
+String threadName = prev.getThreadName();
+String responseCode = prev.getResponseCode();
+String responseDetails = prev.getResponseMessage();
+String testName = result.getName();
+
+UUID uuid = UUID.randomUUID();
+String randomUUIDString = uuid.toString();
+
+obj.put("testStep",sampleLabel);
+obj.put("reference", reference);
+obj.put("requestUrl",samplerData);
+obj.put("requestHeaders", requestHeaders);
+obj.put("testCaseName",threadName);
+obj.put("responseCode",responseCode);
+obj.put("responseDetails", responseDetails);
+obj.put("id",randomUUIDString);
+obj.put("testStepAssertion", testName);
+
+//Verifica Resultado
+boolean testResult = true;
+if(result.isFailure() || result.isError()) {
+    testResult = false;
+    obj.put("failureMessage", result.getFailureMessage());
+}
+
+obj.put("testResult", testResult);
+vars.put(bsh.args[0],obj.toString());
+
+System.out.println("######################################");

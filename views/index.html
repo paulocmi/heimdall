@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="gatewayConnectorTestApp">
+<head>
+    <title>Gateway Connector Test</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <link rel="stylesheet" type="text/css" href="style/style.css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+    <script src="//npmcdn.com/api-check@latest/dist/api-check.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>
+    <script src="//npmcdn.com/angular-formly@latest/dist/formly.js"></script>
+    <script src="//npmcdn.com/angular-formly-templates-bootstrap@latest/dist/angular-formly-templates-bootstrap.js"></script>
+    <script type="text/javascript" src="../node_modules/api-check/dist/api-check.js"></script>
+    <script type="text/javascript" src="../node_modules/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../node_modules/angular/angular.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
+    <script src="app.js"></script>
+    <!--<base href="/">-->
+</head>
+<body>
+    <div class="container">
+        <div class="container col-xs-3">
+            <div id="MainMenu">
+                <div class="list-group panel">
+
+                    <!-- MENU CARTÃO DE CRÉDITO -->
+                    <a href="#MenuCard" class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#MainMenu">Credit Card <span class=" menu-ico-collapse"><i class="glyphicon glyphicon-chevron-down"></i></span></a>
+                    <div class="collapse" id="MenuCard">
+                        <a href="#SubMenuOneCard" class="list-group-item" data-toggle="collapse" data-parent="#SubMenuOneCard">Authorize    <span class=" menu-ico-collapse"><i class="glyphicon glyphicon-chevron-down"></i></span></a>
+                        <div class="collapse list-group-submenu" id="SubMenuOneCard">
+                            <a ui-sref="OneCard/Authorization" href="#" class="list-group-item" data-parent="#SubMenuOneCard">Authorize OK </a>
+                            <a ui-sref="OneCard" href="#" class="list-group-item" data-parent="#SubMenuOneCard">Authorize - Timeout </a>
+                            <a ui-sref="OneCard" href="#" class="list-group-item" data-parent="#SubMenuOneCard">No Authorize </a>
+                        </div>
+                        <a ui-sref="TwoCards"  href="javascript:;" class="list-group-item">Two Cards<span class=" menu-ico-collapse"><i class="glyphicon glyphicon-chevron-down"></i></span></a>
+                        <a ui-sref="CardGiftCard" href="javascript:;" class="list-group-item">Credit Card + Gift Card<span class=" menu-ico-collapse"><i class="glyphicon glyphicon-chevron-down"></i></span></a>
+                    </div>
+
+                    <!-- MENU BOLETO -->
+                    <a href="#MenuBankIssued" class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#MainMenu">Bank Issued<span class=" menu-ico-collapse"><i class="glyphicon glyphicon-chevron-down"></i></span></a>
+                    <div class="collapse" id="MenuBankIssued">
+                        <a ui-sref="BankIssued" href="" class="list-group-item">Bank Issued<span class=" menu-ico-collapse"><i class="glyphicon glyphicon-chevron-down"></i></span></a>
+                        <a ui-sref="CardGiftCard" href="" class="list-group-item">Bank Issued + Gift Card<span class=" menu-ico-collapse"><i class="glyphicon glyphicon-chevron-down"></i></span></a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="container col-xs-9">
+            <ui-view>
+                <script src="controllers/OneCardController.js"></script>
+                <script src="controllers/TwoCardsController.js"></script>
+                <script src="controllers/CardGiftCardController.js"></script>
+                <script src="controllers/BankIssuedController.js"></script>
+                <script src="controllers/BankIssuedGiftCardController.js"></script>
+            </ui-view>
+        </div>
+    </div>
+</body>
+</html>

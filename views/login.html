@@ -1,0 +1,17 @@
+<script>window.vtex = {}</script>
+<script src="//io.vtex.com.br/front-libs/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+<script src="https://vtexid.vtex.com.br/api/vtexid/pub/authentication/script.js"></script>
+<script>
+  $(function(){
+      var returnUrl = vtexid.getReturnUrl() || '/';
+      console.log("#######################");;
+      console.log(vtexid);
+      var onlyHash = /^#/;
+      console.log(returnUrl);
+      if (onlyHash.test(returnUrl)) returnUrl = '/' + returnUrl;
+      vtexid.start({
+          returnUrl: returnUrl,
+          canClose: false
+      });
+  })
+</script>

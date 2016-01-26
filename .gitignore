@@ -1,3 +1,12 @@
+# Node Modules
+node_modules
+
+# Log Jmeter
+jmeter.log
+
+# Ignorando Resultados de teste
+
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db

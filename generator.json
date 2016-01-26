@@ -1,0 +1,19 @@
+{
+	"baseName": "gatewayConnectorTestApp",
+	"entities": [
+		{
+			"name": "[myentity]",
+			"attrs": [
+				{
+					"attrName": "myattr",
+					"attrType": "String",
+					"minLength": "100",
+					"maxLength": "200",
+					"enumValues": [],
+					"required": false
+				}
+			]
+		}
+	],
+	"resources": []
+}

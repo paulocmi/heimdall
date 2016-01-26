@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.8" jmeter="2.13 r1665067">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="AUTHORIZATION" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="Variáveis Definidas Pelo Usuário" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <TestFragmentController guiclass="TestFragmentControllerGui" testclass="TestFragmentController" testname="AUTHORIZATION" enabled="true">
+        <stringProp name="TestPlan.comments">Fluxo de Autorização básico</stringProp>
+      </TestFragmentController>
+      <hashTree>
+        <BSFSampler guiclass="TestBeanGUI" testclass="BSFSampler" testname="dueDate" enabled="true">
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">import java.io.*;
+import java.util.*;
+
+String month = vars.get(&quot;expiryMonth&quot;);
+String year = vars.get(&quot;expiryYear&quot;);
+
+int Value1 = Integer.parseInt(vars.get(&quot;Value1&quot;));
+
+vars.put(&quot;Value&quot;,Value1.toString());
+vars.put(&quot;Value1&quot;,Value1.toString());
+
+
+String dueDate = month+&quot;/&quot;+year;
+vars.put(&quot;dueDate&quot;,dueDate);</stringProp>
+          <stringProp name="scriptLanguage">beanshell</stringProp>
+        </BSFSampler>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Start Transaction - transactions ${Value}" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+  &quot;referenceId&quot;:&quot;${__javaScript(&quot;${__time()}&quot;.substring(0\,10))}&quot;, &#xd;
+  &quot;value&quot;:${Value},&#xd;
+  &quot;salesChannel&quot;:${saleschannel},&quot;urn&quot;:null&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${gateway}</stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/pvt/transactions</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="id" enabled="true">
+            <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+            <stringProp name="RegexExtractor.refname">id</stringProp>
+            <stringProp name="RegexExtractor.regex">&quot;id&quot;:&quot;(.+?)&quot;</stringProp>
+            <stringProp name="RegexExtractor.template">$1$</stringProp>
+            <stringProp name="RegexExtractor.default"></stringProp>
+            <stringProp name="RegexExtractor.match_number">1</stringProp>
+            <stringProp name="Sample.scope">all</stringProp>
+          </RegexExtractor>
+          <hashTree/>
+          <BeanShellAssertion guiclass="BeanShellAssertionGui" testclass="BeanShellAssertion" testname="BeanShell Assertion" enabled="false">
+            <stringProp name="BeanShellAssertion.query">import java.io.*;
+import java.io.PrintStream;
+
+String transactionFile = vars.get(&quot;transactionFile&quot;);
+String transacao = vars.get(&quot;id&quot;);
+
+File f = new File (transactionFile);
+if (!f.exists())
+{
+f.createNewFile();
+}
+
+FileOutputStream arquivoDestino = new FileOutputStream(f,true);  
+PrintStream print = new PrintStream(arquivoDestino); 
+
+print.println(transacao);
+
+print.close();
+arquivoDestino.close();
+
+
+
+</stringProp>
+            <stringProp name="BeanShellAssertion.filename"></stringProp>
+            <stringProp name="BeanShellAssertion.parameters"></stringProp>
+            <boolProp name="BeanShellAssertion.resetInterpreter">false</boolProp>
+          </BeanShellAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Send payment" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+  &quot;paymentsArray&quot;: &quot;[&#xd;
+  {\&quot;paymentSystem\&quot;:${PaymenstSystem},&#xd;
+  \&quot;paymentSystemName\&quot;:\&quot;${PaymentSystemName}\&quot;,&#xd;
+  \&quot;groupName\&quot;:\&quot;creditCard\&quot;,&#xd;
+  \&quot;isCustom\&quot;:false,&#xd;
+  \&quot;allowInstallments\&quot;:false,&#xd;
+  \&quot;isAvailable\&quot;:false,&#xd;
+  \&quot;description\&quot;:null,&#xd;
+  \&quot;installments\&quot;:1,&#xd;
+  \&quot;value\&quot;:${Value},&#xd;
+  \&quot;installmentsInterestRate\&quot;:0,&#xd;
+  \&quot;installmentsValue\&quot;:${Value},&#xd;
+  \&quot;referenceValue\&quot;:${Value},&#xd;
+  \&quot;fields\&quot;:{&#xd;
+    \&quot;holderName\&quot;:\&quot;${cardHolder}\&quot;,&#xd;
+    \&quot;cardNumber\&quot;:\&quot;${cardNumber}\&quot;,&#xd;
+    \&quot;validationCode\&quot;:\&quot;${cvv2}\&quot;,&#xd;
+    \&quot;dueDate\&quot;:\&quot;${dueDate}\&quot;,&#xd;
+    \&quot;document\&quot;:\&quot;${document}\&quot;,&#xd;
+    \&quot;address\&quot;:null,&#xd;
+    \&quot;addressId\&quot;:\&quot;-1366984284819\&quot;,&#xd;
+    \&quot;callbackUrl\&quot;:null},&#xd;
+  \&quot;transaction\&quot;:{\&quot;id\&quot;:\&quot;${id}\&quot;, \&quot;merchantName\&quot;: \&quot;${an}\&quot;}}]&quot;,&#xd;
+  &quot;callbackUrl&quot;: &quot;&quot;&#xd;
+}&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${gateway}</stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+          <stringProp name="HTTPSampler.path">/split/${id}/payments?callbackUrl=</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Send Additional Data" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">[{&#xd;
+    &quot;name&quot;: &quot;cart&quot;,&#xd;
+    &quot;value&quot;: &quot;{\&quot;items\&quot;:[&#xd;
+	{&#xd;
+					\&quot;id\&quot;:\&quot;122323\&quot;,&#xd;
+					\&quot;name\&quot;:\&quot;${Produto1}\&quot;,&#xd;
+					\&quot;value\&quot;:${Value1},&#xd;
+					\&quot;quantity\&quot;:1,&#xd;
+					\&quot;shippingDiscount\&quot;:0,&#xd;
+					\&quot;discount\&quot;:0&#xd;
+				},&#xd;
+				{&#xd;
+					\&quot;id\&quot;:\&quot;122324\&quot;,&#xd;
+					\&quot;name\&quot;:\&quot;${Produto2}\&quot;,&#xd;
+					\&quot;value\&quot;:${Value2},&#xd;
+					\&quot;quantity\&quot;:1,&#xd;
+					\&quot;shippingDiscount\&quot;:0,&#xd;
+					\&quot;discount\&quot;:0&#xd;
+				}&#xd;
+	],\&quot;freight\&quot;:0,&#xd;
+	\&quot;tax\&quot;:0,&#xd;
+	\&quot;isGiftRegistry\&quot;:false&#xd;
+	}&quot;&#xd;
+}, {&#xd;
+    &quot;name&quot;: &quot;clientProfileData&quot;,&#xd;
+    &quot;value&quot;: &quot;{\&quot;email\&quot;:\&quot;${email}\&quot;,\&quot;firstName\&quot;:\&quot;${firstName}\&quot;,\&quot;lastName\&quot;:\&quot;${lastName}\&quot;,\&quot;document\&quot;:\&quot;${document}\&quot;,\&quot;phone\&quot;:\&quot;+551433118100\&quot;,\&quot;corporateName\&quot;:null,\&quot;tradeName\&quot;:null,\&quot;corporateDocument\&quot;:null,\&quot;stateInscription\&quot;:null,\&quot;postalCode\&quot;:\&quot;22011-050\&quot;,\&quot;address\&quot;:{\&quot;receiverName\&quot;:\&quot;Ellen\&quot;,\&quot;postalCode\&quot;:\&quot;22011050\&quot;,\&quot;city\&quot;:\&quot;RIO DE JANEIRO\&quot;,\&quot;state\&quot;:\&quot;RJ\&quot;,\&quot;country\&quot;:\&quot;BRA\&quot;,\&quot;street\&quot;:\&quot;RUA  GENERAL AZEVEDO PIMENTEL\&quot;,\&quot;number\&quot;:\&quot;XXxpto\&quot;,\&quot;neighborhood\&quot;:\&quot;COPACABANA\&quot;,\&quot;complement\&quot;:\&quot;APTO 302\&quot;,\&quot;reference\&quot;:null},\&quot;gender\&quot;:null,\&quot;birthDate\&quot;:null,\&quot;corporatePhone\&quot;:null,\&quot;isCorporate\&quot;:false,\&quot;documentType\&quot;:\&quot;${documentType}\&quot;}&quot;&#xd;
+}, {&#xd;
+    &quot;name&quot;: &quot;shippingData&quot;,&#xd;
+    &quot;value&quot;: &quot;{\&quot;receiverName\&quot;:\&quot;ELLEN\&quot;,\&quot;postalCode\&quot;:\&quot;65035430\&quot;,\&quot;city\&quot;:\&quot;SAO LUIS\&quot;,\&quot;state\&quot;:\&quot;MA\&quot;,\&quot;country\&quot;:\&quot;BRA\&quot;,\&quot;street\&quot;:\&quot;AV NEWTON BELLO \&quot;,\&quot;number\&quot;:\&quot;777\&quot;,\&quot;neighborhood\&quot;:\&quot;MONTE CATELO\&quot;,\&quot;complement\&quot;:\&quot;APTO 302\&quot;,\&quot;reference\&quot;:null}&quot;&#xd;
+}]</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${gateway}</stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/pvt/transactions/${id}/additional-data</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Change State To Authorized" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;transactionId&quot;: &quot;${id}&quot;,&#xd;
+    &quot;softDescriptor&quot;: &quot;${softDescriptor}&quot;,&#xd;
+    &quot;prepareForRecurrency&quot;: false,&#xd;
+    &quot;split&quot;:  []&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${gateway}</stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/pvt/transactions/${id}/authorization-request</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="327823082">400|200</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">true</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.scope">all</stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="Ver Árvore de Resultados" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>false</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <threadCounts>true</threadCounts>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Gerenciador de Cabeçalhos HTTP" enabled="true">
+          <collectionProp name="HeaderManager.headers">
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">Content-Type</stringProp>
+              <stringProp name="Header.value">application/json</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">X-VTEX-API-AppToken</stringProp>
+              <stringProp name="Header.value">${X-VTEX-API-AppToken} </stringProp>
+            </elementProp>
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">X-VTEX-API-AppKey</stringProp>
+              <stringProp name="Header.value">${X-VTEX-API-AppKey} </stringProp>
+            </elementProp>
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">Accept</stringProp>
+              <stringProp name="Header.value">application/json</stringProp>
+            </elementProp>
+          </collectionProp>
+        </HeaderManager>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
